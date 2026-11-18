@@ -19,8 +19,8 @@ The MATLAB scripts generate planar trajectories, state histories, and control-in
 │   │   ├── unicycle_model.m
 │   │   └── extended_unicycle.m
 │   └── controllers/
-│       ├── sliding_mode/sliding_mode.m
-│       ├── polar_coordinates/polar_coordinates.m
+│       ├── sliding_mode.m
+│       ├── polar_coordinates.m
 │       └── dynamic_feedback_linearization/
 │           └── dynamic_feedback_linearization.m
 ├── docs/
@@ -48,9 +48,9 @@ addpath(genpath("src"));
 
 Run each script separately:
 
-- `src/controllers/sliding_mode/sliding_mode.m`
-- `src/controllers/polar_coordinates/polar_coordinates.m`
-- `src/controllers/dynamic_feedback_linearization/dynamic_feedback_linearization.m`
+- `src/controllers/sliding_mode.m`
+- `src/controllers/polar_coordinates.m`
+- `src/controllers/dynamic_feedback_linearization.m`
 
 Each script initializes its own parameters and generates plots.
 
@@ -60,7 +60,7 @@ Each script initializes its own parameters and generates plots.
 - The extended model's function declaration was aligned with its filename and with the call made by the original Live Script.
 - The supplied controller.m was an incomplete fragment with undefined variables, so it is documented but not included as executable code. Smooth_TV.mlx contained no MATLAB code cells and was omitted.
 - The original sliding-mode script computes chained-form discrete updates but advances its stored state using the integrated physical model. This behavior is retained and described in the implementation notes.
-- The original report and presentation remain in the source archive and are summarized in docs/project_overview.md. Third-party books and papers are not redistributed; see docs/references.md.
+- The project report (Digital_Control_Systems.pdf) and presentation (SGAB.pdf) are part of the original project materials, but could not be attached through the available GitHub file-writing integration, which supports text files rather than binary PDF uploads. Their contents are summarized in docs/project_overview.md. Third-party books and papers are not redistributed; see docs/references.md.
 - The MATLAB scripts have not been executed in this environment. Validate runtime behavior and numerical results in MATLAB before relying on them.
 
 ## Authors
