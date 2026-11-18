@@ -24,15 +24,13 @@ The accompanying report discusses the unicycle kinematic and chained-form models
 │   ├── implementation_notes.md
 │   └── references.md
 ├── src/
-│   ├── controllers/
-│   │   ├── sliding_mode.m
-│   │   ├── polar_coordinates.m
-│   │   └── dynamic_feedback_linearization.m
-│   └── models/
-│       ├── unicycle_model.m
-│       └── extended_unicycle.m
-└── results/
-    └── figures/
+   ├── controllers/
+   │   ├── sliding_mode.m
+   │   ├── polar_coordinates.m
+   │    └── dynamic_feedback_linearization.m
+   └── models/
+       ├── unicycle_model.m
+       └── extended_unicycle.m
 ```
 
 ### Project documents
