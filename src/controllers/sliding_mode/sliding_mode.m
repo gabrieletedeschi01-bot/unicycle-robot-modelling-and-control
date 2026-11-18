@@ -45,13 +45,13 @@ for k = 1:N_steps
         u1=0; u21=0; u22=0;
     end
 
-    % Exact discrete-time chained-form update used by the controller.
-    x1_next = x1+tau*u1;
-    x2_next = x2+(tau/2)*u21+(tau/2)*u22;
-    x3_next = x3+tau*x2*u1+(3*tau^2/8)*u21*u1+(tau^2/8)*u22*u1;
-    states(:,k+1) = [x1_next;x2_next;x3_next];
+    % The discrete chained-form update is computed in the original script,
+    % while the stored state is advanced using the physical-model integration.
+    x1_next = x1+tau*u1; %#ok<NASGU>
+    x2_next = x2+(tau/2)*u21+(tau/2)*u22; %#ok<NASGU>
+    x3_next = x3+tau*x2*u1+(3*tau^2/8)*u21*u1+(tau^2/8)*u22*u1; %#ok<NASGU>
 
-    % Physical unicycle simulation for trajectory visualization.
+    % Physical unicycle integration over the two half-sampling intervals.
     v1 = u1/cos(atan(x2));
     v21 = u21/sec(atan(x2))^2;
     v22 = u22/sec(atan(x2))^2;
@@ -62,6 +62,7 @@ for k = 1:N_steps
     init_state = sol(end,:)';
     [~,sol] = ode45(@(t,state) unicycle_model(t,state,v1,v22),t_span,init_state);
     evolution = [evolution,sol'];
+    states(:,k+1) = sol(end,:)';
     controls(:,k) = [u1;u21;u22];
     input_vel = [input_vel;v1;v1];
     input_omega = [input_omega;v21;v22];
