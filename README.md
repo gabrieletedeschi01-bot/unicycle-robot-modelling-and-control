@@ -21,8 +21,7 @@ The MATLAB scripts generate planar trajectories, state histories, and control-in
 │   └── controllers/
 │       ├── sliding_mode.m
 │       ├── polar_coordinates.m
-│       └── dynamic_feedback_linearization/
-│           └── dynamic_feedback_linearization.m
+│       └── dynamic_feedback_linearization.m
 ├── docs/
 │   ├── project_overview.md
 │   ├── implementation_notes.md
