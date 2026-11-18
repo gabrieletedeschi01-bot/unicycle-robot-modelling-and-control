@@ -1,23 +1,50 @@
 # Implementation notes
 
-## Source mapping
+## Repository layout
 
-| Original file | Repository destination | Purpose |
+The repository separates model functions from controller/simulation scripts. There are no controller-specific subdirectories: all three controller scripts are stored directly in `src/controllers/`.
+
+| Repository file | Original source | Role |
 |---|---|---|
-| unicycle_model.m | src/models/unicycle_model.m | Three-state kinematic model with sinusoidal disturbance |
-| extended_unicycle.m | src/models/extended_unicycle.m | Four-state extended model |
-| Sliding_Mode.mlx | src/controllers/sliding_mode/sliding_mode.m | Discrete-time sliding-mode controller |
-| Polar_Coords.mlx | src/controllers/polar_coordinates/polar_coordinates.m | Polar-coordinate regulation |
-| Dynamic_FL.mlx | src/controllers/dynamic_feedback_linearization/dynamic_feedback_linearization.m | Dynamic feedback linearization |
+| `src/models/unicycle_model.m` | `unicycle_model.m` | Three-state kinematic model with sinusoidal disturbance in the translational dynamics |
+| `src/models/extended_unicycle.m` | `extended_unicycle.m` | Four-state dynamically extended unicycle model |
+| `src/controllers/sliding_mode.m` | `Sliding_Mode.mlx` | Discrete-time sliding-mode controller in chained coordinates |
+| `src/controllers/polar_coordinates.m` | `Polar_Coords.mlx` | Regulation using polar-coordinate errors |
+| `src/controllers/dynamic_feedback_linearization.m` | `Dynamic_FL.mlx` | Dynamic feedback linearization |
+
+The original report and presentation are included in `docs/` as `Digital_Control_Systems.pdf` and `SlideDigital.pdf`, respectively.
+
+## Model details
+
+### Standard unicycle model
+
+`unicycle_model.m` implements the kinematic equations and adds the sinusoidal disturbance
+`0.2*sin(2*pi*2*t)` to both translational velocity components. The angular dynamics are given by the supplied angular-rate input.
+
+### Extended unicycle model
+
+`extended_unicycle.m` uses the state vector `[x; y; theta; z]`. The translational speed is the extended state `z`, the heading rate is `omega`, and the derivative of `z` is the input `a`. The disturbance is set to zero in the original implementation.
+
+## Controller scripts
+
+- **Sliding mode:** uses a sampling period `tau = 1`, bounded transformed inputs, a finite number of control steps and two half-period integrations of the physical unicycle model.
+- **Polar coordinates:** uses `T_s = 0.05`, a 20-second simulation horizon, polar error variables and saturated velocity/angular-velocity commands. Each control command is held over an `ode45` integration interval.
+- **Dynamic feedback linearization:** uses the extended state, proportional/derivative gains, saturated acceleration and angular velocity, and `ode45` integration over sample intervals.
+
+All scripts are written as executable MATLAB scripts and initialize their own variables. Run them separately from the repository root after adding `src/` (including its subfolders) to the MATLAB path.
 
 ## Adjustments and exclusions
 
-- The original extended-model file was named extended_unicycle.m, but declared the function extended_unicycle2, while the Live Script calls extended_unicycle. The function declaration has been aligned with the filename and call site; the model equations are otherwise unchanged.
-- The Live Scripts have been exported as ordinary MATLAB .m scripts for easier browsing on GitHub.
-- The original controller.m is an incomplete fragment: it references undefined variables and does not provide a complete state derivative. It is not included as executable source.
-- Smooth_TV.mlx contains no MATLAB code cells and is not included.
-- The sliding-mode script computes the chained-form discrete-time state update and separately integrates the physical unicycle model for trajectory visualization. This distinction is preserved.
+- The original Live Scripts were exported to ordinary `.m` files and placed directly in `src/controllers/`.
+- The original `extended_unicycle.m` declared a function named `extended_unicycle2`, while the controller calls `extended_unicycle`. The repository version aligns the declaration with the filename and call site; the model equations are otherwise retained.
+- The supplied `controller.m` is an incomplete fragment that references undefined variables and does not implement a complete state derivative. It is therefore not included.
+- `Smooth_TV.mlx` contains no substantive MATLAB code and is not included.
+- The project report and presentation are included under `docs/`. Third-party papers and textbooks from the original archive are not copied into the repository.
+
+## Important implementation caveat
+
+In `sliding_mode.m`, the script computes the chained-form discrete updates `x1_next`, `x2_next` and `x3_next`, but the next stored state is assigned from the final state returned by integrating the physical unicycle model. The calculated discrete updates are not used for that assignment. This behavior has been preserved from the source script rather than silently changing the implementation.
 
 ## Validation status
 
-The scripts have been organized from the supplied archive but have not been executed in MATLAB here. Runtime behavior and numerical results should be checked in MATLAB before considering the code fully validated.
+The repository has been inspected for file organization, source mapping and consistency of documentation. The MATLAB scripts have **not** been run in MATLAB during this review. In particular, this documentation review should not be interpreted as numerical or runtime validation.
